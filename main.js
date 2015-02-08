@@ -1,12 +1,15 @@
 
 var main = d3.select("main");
-var graphDiv = main.append("div");
 var dataset = [];
+var dScatter = [];
 
 $.getJSON("data.json", function(d){
   var nDataSize = d.dataPoints.length;
   for(i = 0; i < nDataSize; i++){
     dataset[i] = d.dataPoints[i];
+  }
+  for(i = 0; i < d.dataScatter.length; i++){
+    dScatter[i] = d.dataScatter[i];
   }
 }).done(function(){
 
@@ -39,6 +42,28 @@ $.getJSON("data.json", function(d){
     return (nHeight - (d * 4) + 14);
   }).attr("font-family", "sans-serif").attr("font-size", "11px").attr("fill", "white").attr("text-anchor", "middle");
 
+
+
+
+  var svgScatter = d3.select("main").append("svg").attr("width", nWidth).attr("height", nHeight);
+
+  var circles = svgScatter.selectAll("circle").data(dScatter).enter().append("circle");
+
+  circles.attr("cx", function(d){
+    return d[0];
+  }).attr("cy", function(d){
+    return (nHeight - d[1]);
+  }).attr("r", 5);
+
+  var scatterText = svgScatter.selectAll("text").data(dScatter).enter().append("text");
+
+  scatterText.text(function(d){
+    return d[0] + ", " + d[1];
+  }).attr("x", function(d){
+    return d[0];
+  }).attr("y", function(d){
+    return (nHeight - d[1]);
+  }).attr("font-family", "sans-serif").attr("font-size", "11px").attr("fill", "red");
 
   /**
   d3.select("#barchart")
